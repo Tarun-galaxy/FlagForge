@@ -1,0 +1,29 @@
+# Virtual environments
+backend/venv/
+venv/
+
+# Node packages
+frontend/node_modules/
+node_modules/
+
+# Local databases
+backend/flagforge.db
+flagforge.db
+
+# Python cache files
+__pycache__/
+*.pyc
+backend/.pytest_cache/
+
+# Local env secrets
+backend/.env
+.env
+
+# Frontend build artifacts
+frontend/dist/
+dist/
+
+# Editor configurations
+.vscode/
+.idea/
+.DS_Store
