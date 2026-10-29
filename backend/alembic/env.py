@@ -22,8 +22,12 @@ import sys
 import os
 sys.path.append(os.getcwd())
 
+from app.core.config import settings
 from app.core.database import Base
 from app.models import environment, flag, flag_version, targeting_rule, user_group_membership, audit_log
+
+if settings.DATABASE_URL:
+    config.set_main_option("sqlalchemy.url", settings.DATABASE_URL)
 
 target_metadata = Base.metadata
 
