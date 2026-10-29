@@ -96,6 +96,12 @@ def login_user(payload: LoginRequest, db: Session = Depends(get_db)):
 @router.post("/google/callback")
 def google_oauth_callback(payload: OAuthCallbackRequest, db: Session = Depends(get_db)):
     """Exchanges Google authorization code for user profile and issues JWT."""
+    if not settings.GOOGLE_CLIENT_ID or not settings.GOOGLE_CLIENT_SECRET:
+        raise HTTPException(
+            status_code=500,
+            detail="Google OAuth credentials are missing on the backend. Please set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET in your backend environment variables."
+        )
+
     try:
         # Step 1: Exchange auth code for access token
         token_url = "https://oauth2.googleapis.com/token"
@@ -169,12 +175,26 @@ def google_oauth_callback(payload: OAuthCallbackRequest, db: Session = Depends(g
         }
     except HTTPException:
         raise
+    except urllib.error.HTTPError as e:
+        try:
+            err_body = e.read().decode('utf-8')
+            err_json = json.loads(err_body)
+            msg = err_json.get("error_description") or err_json.get("error") or err_body
+        except Exception:
+            msg = str(e)
+        raise HTTPException(status_code=400, detail=f"Google Authentication Error: {msg}")
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Google Authentication Error: {str(e)}")
 
 @router.post("/github/callback")
 def github_oauth_callback(payload: OAuthCallbackRequest, db: Session = Depends(get_db)):
     """Exchanges GitHub authorization code for user profile and issues JWT."""
+    if not settings.GITHUB_CLIENT_ID or not settings.GITHUB_CLIENT_SECRET:
+        raise HTTPException(
+            status_code=500,
+            detail="GitHub OAuth credentials are missing on the backend. Please set GITHUB_CLIENT_ID and GITHUB_CLIENT_SECRET in your backend environment variables."
+        )
+
     try:
         # Step 1: Exchange auth code for access token
         token_url = "https://github.com/login/oauth/access_token"
