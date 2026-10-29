@@ -17,7 +17,8 @@ function OAuthCallback() {
       return
     }
 
-    handleOAuthCallback(provider, code)
+    const redirectUri = `${window.location.origin}/auth/callback/${provider}`
+    handleOAuthCallback(provider, code, redirectUri)
       .then(() => {
         navigate('/dashboard')
       })

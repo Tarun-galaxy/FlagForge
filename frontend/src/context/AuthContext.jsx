@@ -53,8 +53,8 @@ export function AuthProvider({ children }) {
     return res.data
   }
 
-  const handleOAuthCallback = async (provider, code) => {
-    const res = await apiClient.post(`/api/auth/${provider}/callback`, { code })
+  const handleOAuthCallback = async (provider, code, redirectUri) => {
+    const res = await apiClient.post(`/api/auth/${provider}/callback`, { code, redirect_uri: redirectUri })
     saveAuthSession(res.data.access_token, res.data.user)
     return res.data
   }

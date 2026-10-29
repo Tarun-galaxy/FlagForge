@@ -4,7 +4,9 @@ import { useAuth } from '../context/AuthContext.jsx'
 
 const GOOGLE_CLIENT_ID = '476869353697-2jn3l4noaf5niu37af7c676bqa1vpe26.apps.googleusercontent.com'
 const GITHUB_CLIENT_ID = 'Ov23li5TSWLsjJwx1ido'
-const REDIRECT_BASE = 'http://localhost:5173/auth/callback'
+const REDIRECT_BASE = typeof window !== 'undefined' && window.location?.origin
+  ? `${window.location.origin}/auth/callback`
+  : 'http://localhost:5173/auth/callback'
 
 function LandingPage() {
   const navigate = useNavigate()

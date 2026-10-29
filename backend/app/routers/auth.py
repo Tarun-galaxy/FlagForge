@@ -24,6 +24,7 @@ class LoginRequest(BaseModel):
 
 class OAuthCallbackRequest(BaseModel):
     code: str
+    redirect_uri: Optional[str] = None
 
 @router.post("/register")
 def register_user(payload: RegisterRequest, db: Session = Depends(get_db)):
@@ -102,7 +103,7 @@ def google_oauth_callback(payload: OAuthCallbackRequest, db: Session = Depends(g
             "code": payload.code,
             "client_id": settings.GOOGLE_CLIENT_ID,
             "client_secret": settings.GOOGLE_CLIENT_SECRET,
-            "redirect_uri": settings.GOOGLE_REDIRECT_URI,
+            "redirect_uri": payload.redirect_uri or settings.GOOGLE_REDIRECT_URI,
             "grant_type": "authorization_code"
         }).encode('utf-8')
 
@@ -181,7 +182,7 @@ def github_oauth_callback(payload: OAuthCallbackRequest, db: Session = Depends(g
             "code": payload.code,
             "client_id": settings.GITHUB_CLIENT_ID,
             "client_secret": settings.GITHUB_CLIENT_SECRET,
-            "redirect_uri": settings.GITHUB_REDIRECT_URI
+            "redirect_uri": payload.redirect_uri or settings.GITHUB_REDIRECT_URI
         }).encode('utf-8')
 
         req = urllib.request.Request(token_url, data=token_data, headers={
